@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "MSD8XPNP_meta.h"
 
 void boardTuneDefaults() {
     engineConfiguration->displacement = 2.97;
@@ -33,10 +32,10 @@ void boardTuneDefaults() {
 	setTable(config->veTable, 45);
 
     //MAIN CONFIGURATION
-	engineConfiguration->triggerInputPins[0] = MSD8XPNP_DIGITAL_1;
+	engineConfiguration->triggerInputPins[0] = Gpio::C6;
 
-	engineConfiguration->camInputs[0] = MSD8XPNP_DIGITAL_2;
-    engineConfiguration->camInputs[1] = MSD8XPNP_DIGITAL_3;
+	engineConfiguration->camInputs[0] = Gpio::E11;
+    engineConfiguration->camInputs[1] = Gpio::E12;
 
     engineConfiguration->map.sensor.type = MT_BOSCH_2_5;
 
