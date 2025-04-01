@@ -319,6 +319,7 @@ void setBoardDefaultConfiguration() {
 	setInjectorPins();
 	setIgnitionPins();
 	setupEtb();
+	setupCranking();
 
 	engineConfiguration->injector.flow = 180; // cc/min, who knows if this number is real - no good source of info
     engineConfiguration->displacement = 2.97;
