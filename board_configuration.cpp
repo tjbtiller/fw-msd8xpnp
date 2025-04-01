@@ -287,7 +287,6 @@ static void setupCranking() {
 	engineConfiguration->cranking.baseFuel = 27;
 
 	engineConfiguration->crankingTimingAngle = 15;
-	setTable(config->veTable, 45);
 }
 
 void setBoardConfigOverrides() {
