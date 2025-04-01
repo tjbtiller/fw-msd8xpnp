@@ -39,5 +39,4 @@ void boardTuneDefaults() {
 
     engineConfiguration->map.sensor.type = MT_BOSCH_2_5;
 
-    setPPSCalibration(0.73, 4.0, 0.34, 1.86);
 }
