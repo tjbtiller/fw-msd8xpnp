@@ -71,14 +71,6 @@ void setBoardConfigOverrides() {
 	engineConfiguration->lps25BaroSensorSda = Gpio::B11;
 }
 
-/**
- * @brief   Board-specific configuration defaults.
- *
- * See also setDefaultEngineConfiguration
- *
-
- */
-
 void boardPrepareForStop() {
 	// Wake on the CAN RX pin
 	palEnableLineEvent(PAL_LINE(GPIOD, 0), PAL_EVENT_MODE_RISING_EDGE);
