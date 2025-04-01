@@ -10,6 +10,7 @@ on:
 jobs:
   build-firmware:
     runs-on: ubuntu-latest
+    strategy:
       matrix:
         meta-info:
         - meta-info-msd8xpnp_f4.env
