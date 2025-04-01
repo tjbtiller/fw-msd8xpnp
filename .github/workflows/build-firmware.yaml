@@ -10,6 +10,12 @@ on:
 jobs:
   build-firmware:
     runs-on: ubuntu-latest
+      matrix:
+        meta-info:
+        - meta-info-msd8xpnp_f4.env
+        - meta-info-msd8xpnp_f7.env
+        - meta-info-msd8xpnp_h7.env
+
     steps:
       - uses: actions/checkout@v4
         with:
