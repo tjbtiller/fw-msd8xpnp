@@ -1,42 +1,42 @@
 /**
- * @file boards/msd8xpnp/board_configuration.cpp
+ * @file boards/MSD8XPNP/board_configuration.cpp
  *
- * @brief Configuration defaults for the msd8xpnp board
+ * @brief Configuration defaults for the MSD8XPNP board
  *
  * @author Tyler Browning, (c) 2024
  */
 
 #include "pch.h"
-#include "msd8xpnp_meta.h"
+#include "MSD8XPNP_meta.h"
 
 static const brain_pin_e injPins[] = {
-    Gpio::msd8xpnp_LS_1,
-	Gpio::msd8xpnp_LS_2,
-	Gpio::msd8xpnp_LS_3,
-	Gpio::msd8xpnp_LS_4,
-	Gpio::msd8xpnp_LS_5,
-	Gpio::msd8xpnp_LS_6,
-	Gpio::msd8xpnp_LS_7,
-	Gpio::msd8xpnp_LS_8,
-	Gpio::msd8xpnp_LS_9,
-	Gpio::msd8xpnp_LS_10,
-	Gpio::msd8xpnp_LS_11,
-	Gpio::msd8xpnp_LS_12
+    Gpio::MSD8XPNP_LS_1,
+	Gpio::MSD8XPNP_LS_2,
+	Gpio::MSD8XPNP_LS_3,
+	Gpio::MSD8XPNP_LS_4,
+	Gpio::MSD8XPNP_LS_5,
+	Gpio::MSD8XPNP_LS_6,
+	Gpio::MSD8XPNP_LS_7,
+	Gpio::MSD8XPNP_LS_8,
+	Gpio::MSD8XPNP_LS_9,
+	Gpio::MSD8XPNP_LS_10,
+	Gpio::MSD8XPNP_LS_11,
+	Gpio::MSD8XPNP_LS_12
 };
 
 static const brain_pin_e ignPins[] = {
-	Gpio::msd8xpnp_IGN_1,
-	Gpio::msd8xpnp_IGN_2,
-	Gpio::msd8xpnp_IGN_3,
-	Gpio::msd8xpnp_IGN_4,
-	Gpio::msd8xpnp_IGN_5,
-	Gpio::msd8xpnp_IGN_6,
-	Gpio::msd8xpnp_IGN_7,
-	Gpio::msd8xpnp_IGN_8,
-	Gpio::msd8xpnp_IGN_9,
-	Gpio::msd8xpnp_IGN_10,
-	Gpio::msd8xpnp_IGN_11,
-	Gpio::msd8xpnp_IGN_12,
+	Gpio::MSD8XPNP_IGN_1,
+	Gpio::MSD8XPNP_IGN_2,
+	Gpio::MSD8XPNP_IGN_3,
+	Gpio::MSD8XPNP_IGN_4,
+	Gpio::MSD8XPNP_IGN_5,
+	Gpio::MSD8XPNP_IGN_6,
+	Gpio::MSD8XPNP_IGN_7,
+	Gpio::MSD8XPNP_IGN_8,
+	Gpio::MSD8XPNP_IGN_9,
+	Gpio::MSD8XPNP_IGN_10,
+	Gpio::MSD8XPNP_IGN_11,
+	Gpio::MSD8XPNP_IGN_12,
 };
 
 static void setInjectorPins() {
@@ -103,20 +103,23 @@ static void setupEtb() {
 static void setupDefaultSensorInputs() {
 	// trigger inputs
 	// Digital channel 1 as default - others not set
-	engineConfiguration->triggerInputPins[0] = msd8xpnp_DIGITAL_1;
-	engineConfiguration->camInputs[0] = Gpio::Unassigned;
+	engineConfiguration->triggerInputPins[0] = MSD8XPNP_DIGITAL_1;
+	engineConfiguration->camInputs[0] = MSD8XPNP_DIGITAL_2;
+	engineConfiguration->camInputs[1] = MSD8XPNP_DIGITAL_3;
 
-	engineConfiguration->triggerInputPins[1] = Gpio::Unassigned;
+	engineConfiguration->map.sensor.type = MT_BOSCH_2_5;
 
 
-	engineConfiguration->clt.adcChannel = msd8xpnp_IN_CLT;
-	engineConfiguration->iat.adcChannel = msd8xpnp_IN_IAT;
-	engineConfiguration->tps1_1AdcChannel = msd8xpnp_IN_TPS;
-	engineConfiguration->map.sensor.hwChannel = msd8xpnp_IN_MAP;
+	engineConfiguration->clt.adcChannel = MSD8XPNP_IN_CLT;
+	engineConfiguration->iat.adcChannel = MSD8XPNP_IN_IAT;
+	engineConfiguration->tps1_1AdcChannel = MSD8XPNP_IN_TPS;
+	engineConfiguration->map.sensor.hwChannel = MSD8XPNP_IN_MAP;
+
+	setPPSCalibration(0.73, 4.0, 0.34, 1.86);
 
     // see also enableAemXSeries
 	// pin #28 WBO AFR "Analog Volt 10"
-	engineConfiguration->afr.hwChannel = msd8xpnp_IN_ANALOG_VOLT_10;
+	engineConfiguration->afr.hwChannel = MSD8XPNP_IN_ANALOG_VOLT_10;
 }
 
 static void setupSdCard() {
@@ -134,12 +137,26 @@ static void setupSdCard() {
 	engineConfiguration->spi5mosiPin = Gpio::F9;
 }
 
+static void setupCranking() {
+    setCrankOperationMode();
+	engineConfiguration->trigger.type = trigger_type_e::TT_TOOTHED_WHEEL_60_2;
+
+	// this engine seems to crank at around only 150 RPM? And happily idle at 400RPM?
+	engineConfiguration->cranking.rpm = 350;
+
+	// set cranking_fuel x
+	engineConfiguration->cranking.baseFuel = 27;
+
+	engineConfiguration->crankingTimingAngle = 15;
+	setTable(config->veTable, 45);
+}
+
 void setBoardConfigOverrides() {
 	setupSdCard();
 	setupVbatt();
 
-	engineConfiguration->clt.config.bias_resistor = msd8xpnp_DEFAULT_AT_PULLUP;
-	engineConfiguration->iat.config.bias_resistor = msd8xpnp_DEFAULT_AT_PULLUP;
+	engineConfiguration->clt.config.bias_resistor = MSD8XPNP_DEFAULT_AT_PULLUP;
+	engineConfiguration->iat.config.bias_resistor = MSD8XPNP_DEFAULT_AT_PULLUP;
 
 	engineConfiguration->canTxPin = Gpio::D1;
 	engineConfiguration->canRxPin = Gpio::D0;
@@ -165,6 +182,24 @@ void setBoardDefaultConfiguration() {
 	setIgnitionPins();
 	setupEtb();
 
+	engineConfiguration->injector.flow = 180; // cc/min, who knows if this number is real - no good source of info
+    engineConfiguration->displacement = 2.97;
+    engineConfiguration->cylinderBore = 84.0;
+    engineConfiguration->cylindersCount = 6;
+    strcpy(engineConfiguration->engineMake, ENGINE_MAKE_BMW);
+    strcpy(engineConfiguration->engineCode, "N54");
+    strcpy(engineConfiguration->vehicleName, "Using RR MSD8xPnP");
+    engineConfiguration->firingOrder = FO_1_5_3_6_2_4;
+    engineConfiguration->fuelAlgorithm = LM_SPEED_DENSITY;
+    engineConfiguration->canNbcType = CAN_BUS_BMW_E90;
+
+	engineConfiguration->vvtMode[0] = VVT_SINGLE_TOOTH;
+
+	engineConfiguration->globalTriggerAngleOffset = 90;
+
+	engineConfiguration->ignitionMode = IM_INDIVIDUAL_COILS;
+    engineConfiguration->injectionMode = IM_SEQUENTIAL;
+
 	engineConfiguration->isSdCardEnabled = true;
 
 	// "required" hardware is done - set some reasonable defaults
@@ -172,17 +207,17 @@ void setBoardDefaultConfiguration() {
 
 	engineConfiguration->enableSoftwareKnock = true;
 
-#if HW_msd8xpnp & EFI_PROD_CODE
-	engineConfiguration->mainRelayPin = Gpio::msd8xpnp_LS_12;
-	engineConfiguration->fanPin = Gpio::msd8xpnp_LS_11;
-	engineConfiguration->fuelPumpPin = Gpio::msd8xpnp_LS_10;
-#endif // HW_msd8xpnp
+//#if HW_MSD8XPNP & EFI_PROD_CODE
+//	engineConfiguration->mainRelayPin = Gpio::MSD8XPNP_LS_12;
+//	engineConfiguration->fanPin = Gpio::MSD8XPNP_LS_11;
+//	engineConfiguration->fuelPumpPin = Gpio::MSD8XPNP_LS_10;
+//#endif // HW_MSD8XPNP
 
 	// If we're running as hardware CI, borrow a few extra pins for that
-#ifdef HARDWARE_CI
-	engineConfiguration->triggerSimulatorPins[0] = Gpio::G3;
-	engineConfiguration->triggerSimulatorPins[1] = Gpio::G2;
-#endif
+//#ifdef HARDWARE_CI
+//	engineConfiguration->triggerSimulatorPins[0] = Gpio::G3;
+//	engineConfiguration->triggerSimulatorPins[1] = Gpio::G2;
+//#endif
 }
 
 void boardPrepareForStop() {
@@ -190,87 +225,58 @@ void boardPrepareForStop() {
 	palEnableLineEvent(PAL_LINE(GPIOD, 0), PAL_EVENT_MODE_RISING_EDGE);
 }
 
-#if HW_msd8xpnp
-static Gpio msd8xpnp_N54_OUTPUTS[] = {
-  Gpio::msd8xpnp_LS_1, // inj 1
-  Gpio::msd8xpnp_LS_2, // inj 2
-  Gpio::msd8xpnp_LS_3, // inj 3
-  Gpio::msd8xpnp_LS_4, // inj 4
-  Gpio::msd8xpnp_LS_5, // inj 5
-  Gpio::msd8xpnp_LS_6, // inj 6
-  Gpio::msd8xpnp_LS_14, // starter control or aux output
-  Gpio::msd8xpnp_LS_15, // radiator fan relay output white
+//static Gpio MSD8XPNP_N54_OUTPUTS[] = {
+//  Gpio::MSD8XPNP_LS_1, // inj 1
+// Gpio::MSD8XPNP_LS_2, // inj 2
+//  Gpio::MSD8XPNP_LS_3, // inj 3
+//  Gpio::MSD8XPNP_LS_4, // inj 4
+//  Gpio::MSD8XPNP_LS_5, // inj 5
+//  Gpio::MSD8XPNP_LS_6, // inj 6
+//  Gpio::MSD8XPNP_LS_14, // starter control or aux output
+//  Gpio::MSD8XPNP_LS_15, // radiator fan relay output white
 
-  Gpio::msd8xpnp_IGN_1, // ign 1
-	Gpio::msd8xpnp_IGN_2, // ign 2
-  Gpio::msd8xpnp_IGN_3, // ign 3
-  Gpio::msd8xpnp_IGN_4, // ign 4
-  Gpio::msd8xpnp_IGN_5, // ign 5
-  Gpio::msd8xpnp_IGN_6, // ign 6
+//  Gpio::MSD8XPNP_IGN_1, // ign 1
+//  Gpio::MSD8XPNP_IGN_2, // ign 2
+//  Gpio::MSD8XPNP_IGN_3, // ign 3
+//  Gpio::MSD8XPNP_IGN_4, // ign 4
+//  Gpio::MSD8XPNP_IGN_5, // ign 5
+//  Gpio::MSD8XPNP_IGN_6, // ign 6
 
-  //Gpio::msd8xpnp_LS_13, // main relay
-  //Gpio::msd8xpnp_LS_16, // main relay
+  //Gpio::MSD8XPNP_LS_13, // main relay
+  //Gpio::MSD8XPNP_LS_16, // main relay
+//};
+
+static Gpio MSD8XPNP_OUTPUTS[] = {
+Gpio::MSD8XPNP_LS_1,
+Gpio::MSD8XPNP_LS_2,
+Gpio::MSD8XPNP_LS_3,
+Gpio::MSD8XPNP_LS_4,
+Gpio::MSD8XPNP_LS_5,
+Gpio::MSD8XPNP_LS_6,
+Gpio::MSD8XPNP_LS_7,
+Gpio::MSD8XPNP_LS_8,
+Gpio::MSD8XPNP_LS_9,
+Gpio::MSD8XPNP_LS_10,
+Gpio::MSD8XPNP_LS_11,
+Gpio::MSD8XPNP_LS_12,
+Gpio::MSD8XPNP_LS_13,
+Gpio::MSD8XPNP_LS_14,
+Gpio::MSD8XPNP_LS_15,
+Gpio::MSD8XPNP_LS_16,
+	Gpio::MSD8XPNP_IGN_1,
+	Gpio::MSD8XPNP_IGN_2,
+	Gpio::MSD8XPNP_IGN_3,
+	Gpio::MSD8XPNP_IGN_4,
+	Gpio::MSD8XPNP_IGN_5,
+	Gpio::MSD8XPNP_IGN_6,
+	Gpio::MSD8XPNP_IGN_7,
+	Gpio::MSD8XPNP_IGN_8,
+	Gpio::MSD8XPNP_IGN_9,
+	Gpio::MSD8XPNP_IGN_10,
+	Gpio::MSD8XPNP_IGN_11,
+	Gpio::MSD8XPNP_IGN_12,
+	Gpio::MSD8XPNP_HS_1,
+	Gpio::MSD8XPNP_HS_2,
+	Gpio::MSD8XPNP_HS_3,
+	Gpio::MSD8XPNP_HS_4
 };
-
-int getBoardMetaLowSideOutputsCount() {
-    if (engineConfiguration->engineType == engine_type_e::BMW_N54) {
-        return getBoardMetaOutputsCount();
-    }
-    return 16;
-}
-
-static Gpio msd8xpnp_OUTPUTS[] = {
-Gpio::msd8xpnp_LS_1,
-Gpio::msd8xpnp_LS_2,
-Gpio::msd8xpnp_LS_3,
-Gpio::msd8xpnp_LS_4,
-Gpio::msd8xpnp_LS_5,
-Gpio::msd8xpnp_LS_6,
-Gpio::msd8xpnp_LS_7,
-Gpio::msd8xpnp_LS_8,
-Gpio::msd8xpnp_LS_9,
-Gpio::msd8xpnp_LS_10,
-Gpio::msd8xpnp_LS_11,
-Gpio::msd8xpnp_LS_12,
-Gpio::msd8xpnp_LS_13,
-Gpio::msd8xpnp_LS_14,
-Gpio::msd8xpnp_LS_15,
-Gpio::msd8xpnp_LS_16,
-	Gpio::msd8xpnp_IGN_1,
-	Gpio::msd8xpnp_IGN_2,
-	Gpio::msd8xpnp_IGN_3,
-	Gpio::msd8xpnp_IGN_4,
-	Gpio::msd8xpnp_IGN_5,
-	Gpio::msd8xpnp_IGN_6,
-	Gpio::msd8xpnp_IGN_7,
-	Gpio::msd8xpnp_IGN_8,
-	Gpio::msd8xpnp_IGN_9,
-	Gpio::msd8xpnp_IGN_10,
-	Gpio::msd8xpnp_IGN_11,
-	Gpio::msd8xpnp_IGN_12,
-	Gpio::msd8xpnp_HS_1,
-	Gpio::msd8xpnp_HS_2,
-	Gpio::msd8xpnp_HS_3,
-	Gpio::msd8xpnp_HS_4
-};
-
-int getBoardMetaOutputsCount() {
-    if (engineConfiguration->engineType == engine_type_e::BMW_N54) {
-      return efi::size(msd8xpnp_N54_OUTPUTS);
-  }
-    return efi::size(msd8xpnp_OUTPUTS);
-}
-
-int getBoardMetaDcOutputsCount() {
-    if (engineConfiguration->engineType == engine_type_e::BMW_N54) {
-        return 1;
-/*    return 2; msd8xpnp has two h-bridges but stim board is short on channels to test :( */
-}
-
-Gpio* getBoardMetaOutputs() {
-    if (engineConfiguration->engineType == engine_type_e::BMW_N54) {
-        return msd8xpnp_N54_OUTPUTS;
-    }
-    return msd8xpnp_OUTPUTS;
-}
-#endif // HW_msd8xpnp

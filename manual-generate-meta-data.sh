@@ -12,4 +12,4 @@ export META_OUTPUT_ROOT_FOLDER=../../../generated/
 cd ext/rusefi/firmware/
 
 # todo: use meta-info.txt
-bash gen_config_board.sh ../../.. MSD8xPnP
+bash gen_config_board.sh ../../.. MSD8XPNP

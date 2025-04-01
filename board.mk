@@ -14,7 +14,7 @@ endif
 
 # see also openblt/board.mk STATUS_LED
 DDEFS += -DLED_CRITICAL_ERROR_BRAIN_PIN=Gpio::E3
-DDEFS += -DFIRMWARE_ID=\"msd8xpnp\"
+DDEFS += -DFIRMWARE_ID=\"MSD8XPNP\"
 DDEFS += $(VAR_DEF_ENGINE_TYPE)
 
 
@@ -28,7 +28,7 @@ DDEFS += -DOPEN_BLT_TEST_COMMAND=1
 # let's start asap
 DDEFS += -DBOOT_BACKDOOR_ENTRY_TIMEOUT_MS=0
 
-# Any MSD8xPnP-based adapter boards with discrete-VR decoder are controlled via a 5v ignition output
+# Any MSD8XPNP-based adapter boards with discrete-VR decoder are controlled via a 5v ignition output
 DDEFS += -DVR_SUPPLY_VOLTAGE=5
 
 # This stuff doesn't work on H7 yet
@@ -52,14 +52,14 @@ DDEFS += -DOPENBLT_CAN_RX_PIN=0
 DDEFS += -DOPENBLT_CAN_TX_PORT=GPIOD
 DDEFS += -DOPENBLT_CAN_TX_PIN=1
 
-# We are running on MSD8xPnP hardware!
-DDEFS += -DHW_MSD8xPnP=1
+# We are running on MSD8XPNP hardware!
+DDEFS += -DHW_MSD8XPNP=1
 
 ifeq ($(PROJECT_CPU),ARCH_STM32F7)
   # todo: KNOCK_SPECTROGRAM to use big_buffer
 	DDEFS += -DKNOCK_SPECTROGRAM=TRUE
 	DDEFS += -DLUA_RX_MAX_FILTER_COUNT=96
-	DDEFS += -DSTATIC_BOARD_ID=STATIC_BOARD_ID_MSD8xPnP_F7
+	DDEFS += -DSTATIC_BOARD_ID=STATIC_BOARD_ID_MSD8XPNP_F7
 
   DDEFS += -DLUA_USER_HEAP=150000
 
@@ -73,13 +73,13 @@ ifeq ($(PROJECT_CPU),ARCH_STM32F7)
 		DEBUG_LEVEL_OPT = -Os -ggdb -g
 	endif
 else ifeq ($(PROJECT_CPU),ARCH_STM32F4)
-	DDEFS += -DSTATIC_BOARD_ID=STATIC_BOARD_ID_MSD8xPnP_F4
+	DDEFS += -DSTATIC_BOARD_ID=STATIC_BOARD_ID_MSD8XPNP_F4
 	DDEFS += -DRAM_UNUSED_SIZE=100
 	# todo: https://github.com/rusefi/rusefi/pull/7505
 	# you would think that removal of below like would reduce flash usage but somehow it increased it somehow?!
 	DDEFS += -DKNOCK_SPECTROGRAM=TRUE
 else ifeq ($(PROJECT_CPU),ARCH_STM32H7)
-	DDEFS += -DSTATIC_BOARD_ID=STATIC_BOARD_ID_MSD8xPnP_H7
+	DDEFS += -DSTATIC_BOARD_ID=STATIC_BOARD_ID_MSD8XPNP_H7
 else
 $(error Unsupported PROJECT_CPU [$(PROJECT_CPU)])
 endif
