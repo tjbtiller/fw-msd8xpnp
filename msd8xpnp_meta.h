@@ -1,8 +1,8 @@
 /*
  * msd8xpnp_meta.h
  *
- * @date Oct 2, 2021
- * @author Andrey Belomutskiy, (c) 2012-2021
+ * @date March 31, 2025
+ * @author Tyler Browning
  */
 
 #pragma once

@@ -213,7 +213,7 @@ static Gpio msd8xpnp_N54_OUTPUTS[] = {
 };
 
 int getBoardMetaLowSideOutputsCount() {
-    if (engineConfiguration->engineType == engine_type_e::msd8xpnp_BMW_N54) {
+    if (engineConfiguration->engineType == engine_type_e::BMW_N54) {
         return getBoardMetaOutputsCount();
     }
     return 16;
@@ -255,20 +255,20 @@ Gpio::msd8xpnp_LS_16,
 };
 
 int getBoardMetaOutputsCount() {
-    if (engineConfiguration->engineType == engine_type_e::msd8xpnp_BMW_N54) {
+    if (engineConfiguration->engineType == engine_type_e::BMW_N54) {
       return efi::size(msd8xpnp_N54_OUTPUTS);
   }
     return efi::size(msd8xpnp_OUTPUTS);
 }
 
 int getBoardMetaDcOutputsCount() {
-    if (engineConfiguration->engineType == engine_type_e::msd8xpnp_BMW_N54) {
+    if (engineConfiguration->engineType == engine_type_e::BMW_N54) {
         return 1;
 /*    return 2; msd8xpnp has two h-bridges but stim board is short on channels to test :( */
 }
 
 Gpio* getBoardMetaOutputs() {
-    if (engineConfiguration->engineType == engine_type_e::msd8xpnp_BMW_N54) {
+    if (engineConfiguration->engineType == engine_type_e::BMW_N54) {
         return msd8xpnp_N54_OUTPUTS;
     }
     return msd8xpnp_OUTPUTS;
