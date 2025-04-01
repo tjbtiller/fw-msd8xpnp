@@ -180,7 +180,7 @@ static void setIgnitionPins() {
 
 //CONFIGURATION
 
-void boardTuneDefaults() {
+void setboardTuneDefaults() {
 	engineConfiguration->isSdCardEnabled = true;
 
     engineConfiguration->displacement = 2.97;
