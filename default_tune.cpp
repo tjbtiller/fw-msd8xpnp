@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "MSD8XPNP_meta.h"
 
 void boardTuneDefaults() {
     engineConfiguration->displacement = 2.97;
